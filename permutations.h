@@ -1,8 +1,7 @@
 #pragma once
 #include "config.h"
 
-class Permutation
-{
+class Permutation {
 private:
     std::vector<Index> array;
 
@@ -17,21 +16,23 @@ public:
     Permutation(const char *c);
 
     friend std::ostream &operator << (std::ostream &os, const Permutation &p);
-    Int size();
+    Int size() const;
     
     void fromVector(const std::vector<Index> &a);
     const char *fromString(const char *s);
     void fromOrder(BigInt o);
-    BigInt order();
+    BigInt order() const;
 
-    Index operator [] (Int i);
-    Index operator () (Int i);
-
+    Index operator [] (Int i) const;
+    Index operator () (Int i) const;
+    
     void swap(Int i, Int j);
 
-    bool operator == (const Permutation &other);
-    bool operator != (const Permutation &other);
+    Permutation operator () (const Permutation &other) const;
+
+    bool operator == (const Permutation &other) const;
+    bool operator != (const Permutation &other) const;
     
-    Permutation next();
+    Permutation next() const;
     MaybeDone makeNext();
 };

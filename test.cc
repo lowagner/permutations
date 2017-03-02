@@ -206,6 +206,22 @@ void testSwapInappropriateIndicesFail() {
     std::cout << p << "\n";
 }
 
+void testCompose() {
+    Permutation p({1, 2, 0});
+    Permutation q({0, 2, 1});
+    Permutation r = p(q);
+    Permutation s({1, 0, 2});
+    std::cout << p << "(" << q << ") = " << r << "\n";
+    if (r != s)
+        error("didn't compose correctly");
+}
+
+void testComposeFail() {
+    Permutation p({1, 0});
+    Permutation q({1, 2, 0});
+    Permutation r = p(q);
+}
+
 int main(int narg, char **args) {
     TEST(Copy);
     TEST(Next);
@@ -233,6 +249,9 @@ int main(int narg, char **args) {
     
     TEST(SwapIndices);
     TESTSHOULDFAIL(SwapInappropriateIndicesFail);
+
+    TEST(Compose);
+    TESTSHOULDFAIL(ComposeFail);
 
     std::cout << "All tests passed, good work.\n";
     return 0;
