@@ -1,5 +1,19 @@
 #include "permutations.h"
 
+#define TEST(x) try { \
+    test##x(); \
+} catch (std::exception &e) { \
+    std::cerr << "test"#x" failed\n" << e.what() << "\n"; return 1; \
+} \
+std::cout << "test"#x" passed\n";
+
+#define TESTSHOULDFAIL(x) try { \
+    test##x(); \
+    std::cerr << "test"#x" FAILED.  it executed without error; when it should have thrown an exception.\n"; return 1; \
+} catch (std::exception &e) { \
+    std::cerr << "test"#x" passed, as it threw an exception (and it was supposed to).\n";\
+}
+
 class TestError : public std::exception {
 public:
     virtual const char* what() const throw() {
@@ -166,28 +180,30 @@ void testGetValue() {
 
 void testGetValueFail() {
     Permutation p({1, 3, 0, 4, 2, 5});
-    std::cout << p << ", p[8] = " << p[8] << "\n";
+    std::cout << p << ", p[8] = " << (int)p[8] << "\n";
 }
 
 void testGetNegativeIndex() {
     Permutation p({1, 3, 0, 4, 2, 5});
-    std::cout << p << ", p(-1) = " << p(-1) << "\n";
+    std::cout << p << ", p(-1) = " << (int)p(-1) << "\n";
     if (p(-1) != 5)
         error("did not get the right element");
 }
 
-#define TEST(x) try { \
-    test##x(); \
-} catch (std::exception &e) { \
-    std::cerr << "test"#x" failed\n" << e.what() << "\n"; return 1; \
-} \
-std::cout << "test"#x" passed\n";
+void testSwapIndices() {
+    Permutation p({1, 3, 0, 4, 2, 5});
+    std::cout << p << "\n";
+    p.swap(0, 5);
+    std::cout << p << "\n";
+    if (p[0] != 5 or p[5] != 1)
+        error("didn't swap well");
+}
 
-#define TESTSHOULDFAIL(x) try { \
-    test##x(); \
-    std::cerr << "test"#x" FAILED.  it executed without error; when it should have thrown an exception.\n"; return 1; \
-} catch (std::exception &e) { \
-    std::cerr << "test"#x" passed, as it threw an exception (and it was supposed to).\n";\
+void testSwapInappropriateIndicesFail() {
+    Permutation p({1, 3, 0, 4, 2, 5});
+    std::cout << p << "\n";
+    p.swap(-1, 6);
+    std::cout << p << "\n";
 }
 
 int main(int narg, char **args) {
@@ -214,6 +230,9 @@ int main(int narg, char **args) {
     TEST(GetValue);
     TESTSHOULDFAIL(GetValueFail);
     TEST(GetNegativeIndex);
+    
+    TEST(SwapIndices);
+    TESTSHOULDFAIL(SwapInappropriateIndicesFail);
 
     std::cout << "All tests passed, good work.\n";
     return 0;

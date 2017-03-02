@@ -170,13 +170,17 @@ BigInt Permutation::order() {
     return result;
 }
 
-Int Permutation::operator [] (Int i) {
+Index Permutation::operator [] (Int i) {
     return array.at(i); // bounds checking, throws error if outside
 }
 
-Int Permutation::operator () (Int i) {
+Index Permutation::operator () (Int i) {
     const Int N = array.size();
     return array[((i%N)+N)%N]; // puts it into bounds
+}
+
+void Permutation::swap(Int i, Int j) {
+    std::swap(array.at(i), array.at(j));
 }
 
 bool Permutation::operator == (const Permutation &other) {

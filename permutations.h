@@ -24,8 +24,10 @@ public:
     void fromOrder(BigInt o);
     BigInt order();
 
-    Int operator [] (Int i);
-    Int operator () (Int i);
+    Index operator [] (Int i);
+    Index operator () (Int i);
+
+    void swap(Int i, Int j);
 
     bool operator == (const Permutation &other);
     bool operator != (const Permutation &other);
