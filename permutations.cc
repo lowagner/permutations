@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <iostream>
 
-Permutation::Permutation(int N) {
+Permutation::Permutation(Int N) {
     setSize(N);
     for (int i=0; i<N; ++i)
         array.push_back(i);
@@ -17,7 +17,7 @@ Permutation::Permutation(const char *c) {
         throw std::invalid_argument("bad initializer string for Permutation");
 }
 
-int Permutation::size() {
+Int Permutation::size() {
     return array.size();
 }
 
@@ -26,7 +26,7 @@ std::ostream &operator << (std::ostream &os, const Permutation &p) {
 }
  
 void Permutation::fromVector(const std::vector<Index> &a) {
-    const int N = a.size();
+    const Int N = a.size();
     setSize(N);
     for (int i=0; i<N; ++i) {
         array.push_back(0);
@@ -102,7 +102,7 @@ const char *Permutation::fromString(const char *c) {
 
 void Permutation::fromOrder(BigInt o) {
     std::vector<Index> indicesToRemainingIndices;
-    const int N = array.size();
+    const Int N = array.size();
     indicesToRemainingIndices.reserve(N);
     for (int i=0; i<N; ++i)
         indicesToRemainingIndices.push_back(0);
@@ -127,7 +127,7 @@ void Permutation::fromOrder(BigInt o) {
 BigInt Permutation::order() {
     // give the number in [0, array.size()!) (Factorial) which corresponds to this Permutation
     std::vector<Index> remainingIndices;
-    const int N = array.size();
+    const Int N = array.size();
     remainingIndices.reserve(N);
     BigInt result = 0;
     BigInt factorial = 1;
@@ -170,6 +170,15 @@ BigInt Permutation::order() {
     return result;
 }
 
+Int Permutation::operator [] (Int i) {
+    return array.at(i); // bounds checking, throws error if outside
+}
+
+Int Permutation::operator () (Int i) {
+    const Int N = array.size();
+    return array[((i%N)+N)%N]; // puts it into bounds
+}
+
 bool Permutation::operator == (const Permutation &other) {
     return (array == other.array);
 }
@@ -208,7 +217,7 @@ MaybeDone Permutation::makeNext() {
     return NotDone;
 }
 
-void Permutation::setSize(int N) {
+void Permutation::setSize(Int N) {
     array.clear();
     if (N < 2)
         throw std::out_of_range("permutation is nonexistent or trivial -- boring!");

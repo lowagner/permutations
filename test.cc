@@ -157,6 +157,25 @@ void testFromOrder() {
     throw TestError();
 }
 
+void testGetValue() {
+    Permutation p({1, 3, 0, 4, 2});
+    std::cout << p << ", p[1] = " << (int) p[1] << "\n";
+    if (p(1) != 3)
+        error("did not get the right element");
+}
+
+void testGetValueFail() {
+    Permutation p({1, 3, 0, 4, 2, 5});
+    std::cout << p << ", p[8] = " << p[8] << "\n";
+}
+
+void testGetNegativeIndex() {
+    Permutation p({1, 3, 0, 4, 2, 5});
+    std::cout << p << ", p(-1) = " << p(-1) << "\n";
+    if (p(-1) != 5)
+        error("did not get the right element");
+}
+
 #define TEST(x) try { \
     test##x(); \
 } catch (std::exception &e) { \
@@ -192,6 +211,10 @@ int main(int narg, char **args) {
     TEST(Order);
     TEST(FromOrder);
    
+    TEST(GetValue);
+    TESTSHOULDFAIL(GetValueFail);
+    TEST(GetNegativeIndex);
+
     std::cout << "All tests passed, good work.\n";
     return 0;
 }

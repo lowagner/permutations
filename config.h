@@ -11,13 +11,18 @@
 #error "Permutations should be bigger."
 #elif MAX_PERMUTATION_SIZE <= 256
 typedef uint8_t Index;
+typedef uint_fast8_t Uint;
+typedef int_fast16_t Int;
 #elif MAX_PERMUTATION_SIZE <= 65536
 typedef uint16_t Index;
+typedef uint_fast16_t Uint;
+typedef int_fast32_t Int;
 #elif MAX_PERMUTATION_SIZE <= 4294967296
 typedef uint32_t Index;
+typedef uint_fast32_t Uint;
+typedef int_fast64_t Int;
 #else
 #error "Permutations this big will probably run you out of memory."
-typedef uint64_t Index;
 #endif
 
 void warn(const char *c);
