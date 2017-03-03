@@ -222,6 +222,31 @@ void testComposeFail() {
     Permutation r = p(q);
 }
 
+void testCycleAndPermutationFromString() {
+    const char *s = "{0, 1, 5}Permutation( {1, 5, 2, 3, 4, 0 })";
+    try {
+        Permutation shouldfail(s);
+        error("that should have failed"); 
+    } catch (std::invalid_argument &e) {
+        std::cout << e.what() << "\n";
+    }
+    Cycle c(s);
+    std::cout << "cycle = " << c << "\n";
+    Permutation p(s);
+    std::cout << "permutation = " << p << "\n";
+    CycleForm C(c);
+    std::cout << "cycleform = " << C << "\n";
+    if (C != p) {
+        for (Int i=0; i<C.size(); ++i) {
+            std::cout << "C["<<i<<"] = " << (int)C[i] << "\n";
+        }
+        for (Int i=0; i<p.size(); ++i) {
+            std::cout << "p["<<i<<"] = " << (int)p[i] << "\n";
+        }
+        error("cycleform should be equal to permutation");
+    }
+}
+
 void testCycle() {
     Cycle c;
     c.push(0);
@@ -274,6 +299,8 @@ int main(int narg, char **args) {
 
     TEST(Compose);
     TESTSHOULDFAIL(ComposeFail);
+    
+    TEST(CycleAndPermutationFromString);
     
     TEST(Cycle);
     TEST(CycleFromString);

@@ -21,8 +21,8 @@ Cycle::Cycle(const char *&&s) {
     fromString(s);
 }
 
-std::ostream &operator << (std::ostream &os, const Cycle &p) {
-    return os << p.array;
+std::ostream &operator << (std::ostream &os, const Cycle &c) {
+    return os << c.array;
 }
 
 void Cycle::fromString(const char *&s) {
@@ -31,11 +31,11 @@ void Cycle::fromString(const char *&s) {
     array = trial;
 }
     
-Index Cycle::operator [] (Int i) {
+Index Cycle::operator [] (Int i) const {
     return array.at(i); // bounds checking
 }
 
-Index Cycle::operator () (Int i) {
+Index Cycle::operator () (Int i) const {
     Int N=array.size();
     return array[((i%N)+N)%N];
 }
@@ -54,11 +54,19 @@ Int Cycle::size() const {
     return array.size();
 }
 
-Cycle::iterator Cycle::begin()  {
+Cycle::iterator Cycle::begin() {
     return array.begin();
 }
 
 Cycle::iterator Cycle::end() {
+    return array.end();
+}
+
+Cycle::const_iterator Cycle::begin() const {
+    return array.begin();
+}
+
+Cycle::const_iterator Cycle::end() const {
     return array.end();
 }
 
@@ -67,6 +75,14 @@ Cycle::iterator Cycle::end() {
 
 CycleForm::CycleForm(Int N) {
     setSize(N);
+}
+
+CycleForm::CycleForm(const Cycle &c) {
+    std::vector< std::vector<Index> > a;
+    a.push_back({});
+    for (auto const &index: c)
+        a[0].push_back(index);
+    fromVectorVector(a);
 }
 
 CycleForm::CycleForm(const std::vector< std::vector<Index> > &a) {
@@ -79,6 +95,16 @@ CycleForm::CycleForm(const char *&c) {
 
 CycleForm::CycleForm(const char *&&c) {
     fromString(c);
+}
+
+std::ostream &operator << (std::ostream &os, const CycleForm &C) {
+    os << "CycleForm({";
+    if (C.cycles.size() == 0)
+        return os << "{" << C.size() << "}})";
+    os << C.cycles[0];
+    for (Int i=1; i<C.cycles.size(); ++i)
+        os << ", " << C.cycles[i];
+    return os << "})";
 }
 
 void CycleForm::fromVectorVector(const std::vector< std::vector<Index> > &vectorvector) {
@@ -98,6 +124,7 @@ void CycleForm::fromVectorVector(const std::vector< std::vector<Index> > &vector
 void CycleForm::fromString(const char *&c) {
     std::vector< std::vector<Index> > a;
     // TODO
+    throw std::logic_error("not implemented yet");
     fromVectorVector(a);
 }
  
@@ -113,15 +140,13 @@ Index CycleForm::operator () (Int i) const {
 
 Index CycleForm::get(Index i) const {
     // brute force it for now.  TODO sort cycles in some smart way.
-    for (auto cycle : cycles)
-        for (Int j; j<cycle.size(); ++j) {
+    for (auto const cycle : cycles) {
+        for (Int j=0; j<cycle.size(); ++j) {
             if (cycle[j] == i) {
-                if (j+1 >= cycle.size())
-                    return cycle[0];
-                else
-                    return cycle[j+1];
+                return cycle(j+1);  // () loops around.
             }
         }
+    }
     // if we couldn't find it in the cycles list, it is a fixed point.
     return i;
 }
@@ -143,14 +168,16 @@ void CycleForm::validate() {
     for (int i=0; i<_size; ++i)
         values.push_back(0);
     Int total = 0;
-    Int cycle_index = 0;
-    while (cycle_index < cycles.size()) {
-        for (auto i : cycles[cycle_index]) {
+    for (auto cycle : cycles) {
+        for (auto i : cycle) {
             if (values.at(i) == 0) // check bounds here
                 values[i] = 1;
             else
                 throw std::invalid_argument("CycleForm invalid, repeated numbers");
             ++total;
         }
+    }
+    if (total > _size) {
+        throw std::invalid_argument("CycleForm invalid, more numbers seen than size of CycleForm");
     }
 }

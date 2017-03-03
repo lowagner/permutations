@@ -16,17 +16,19 @@ public:
     
     void fromString(const char *&s);
 
-    Index operator [] (Int i);
-    Index operator () (Int i);
+    Index operator [] (Int i) const;
+    Index operator () (Int i) const;
 
     void push(Index value);
     Index pop();
     Int size() const;
 
     typedef std::vector<Index>::iterator iterator;
-    typedef std::vector<Index>::const_iterator const_iterator;
     iterator begin();
     iterator end();
+    typedef std::vector<Index>::const_iterator const_iterator;
+    const_iterator begin() const;
+    const_iterator end() const;
 };
 
 class CycleForm : public Mapping {
@@ -36,6 +38,7 @@ private:
 
 public:
     CycleForm(Int N=MAX_PERMUTATION_SIZE);
+    CycleForm(const Cycle &c);
     CycleForm(const std::vector< std::vector<Index> > &a);
     CycleForm(const char *&c);
     CycleForm(const char *&&c);
