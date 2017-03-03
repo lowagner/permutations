@@ -12,9 +12,12 @@ Permutation::Permutation(const std::vector<Index> &a) {
     fromVector(a);
 }
 
-Permutation::Permutation(const char *c) {
-    if (fromString(c) == nullptr)
-        throw std::invalid_argument("bad initializer string for Permutation");
+Permutation::Permutation(const char *&c) {
+    fromString(c);
+}
+
+Permutation::Permutation(const char *&&c) {
+    fromString(c);
 }
 
 Int Permutation::size() const {
@@ -43,16 +46,12 @@ void Permutation::fromVector(const std::vector<Index> &a) {
         array[i] = a[i];
 }
 
-const char *Permutation::fromString(const char *c) {
-    if (!(c=matchUpTo(c, "Permutation(")))
-        return nullptr;
+void Permutation::fromString(const char *&c) {
+    matchUpTo(c, "Permutation(");
     std::vector<Index> trial;
-    if (!(c=getArrayFromString(trial, c)))
-        return nullptr;
-    if (!(c=matchUpTo(c, ")")))
-        return nullptr;
+    getArrayFromString(trial, c);
+    matchUpTo(c, ")");
     fromVector(trial);
-    return c;
 }
 
 void Permutation::fromOrder(BigInt o) {
@@ -138,14 +137,14 @@ void Permutation::swap(Int i, Int j) {
     std::swap(array.at(i), array.at(j));
 }
 
-Permutation Permutation::operator () (const Permutation &other) const {
+Permutation Permutation::operator () (const Mapping &other) const {
     Int N = size();
     if (N != other.size())
         throw std::out_of_range("unmatched Permutation sizes, cannot compose");
     Permutation p(2);
     p.setSize(N);
     for (Int i=0; i<N; ++i)
-        p.array.push_back(array[other.array[i]]);
+        p.array.push_back(array[other[i]]);
     return p;
 }
 

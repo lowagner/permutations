@@ -136,10 +136,9 @@ void testStringUnclosedBracketsFail() {
 
 void testStringMultiple() {
     const char *s =  "\n \t Permutation({3, 2, 4, 1, 0})Permutation({1, 0})";
-    Permutation p(2), q(2);
-    s = p.fromString(s);
+    Permutation p(s);
+    Permutation q(s);
     std::cout << p << "\n";
-    s = q.fromString(s);
     std::cout << q << "\n";
     if (p.size() != 5 or q.size() != 2)
         error("expected different numbers of elements in these permutations");

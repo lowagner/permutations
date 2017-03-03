@@ -33,8 +33,8 @@ typedef enum {
 
 typedef mpz_class BigInt;
 
-const char *firstNonSpace(const char *c);
-const char *matchUpTo(const char *c, const char *format);
-   
+void firstNonSpace(const char *&c);
+void matchUpTo(const char *&c, const char *format);
+void getArrayFromString(std::vector<Index> &trial, const char *&c);
+
 std::ostream &operator << (std::ostream &os, const std::vector<Index> &p);
-const char *getArrayFromString(std::vector<Index> &trial, const char *c);

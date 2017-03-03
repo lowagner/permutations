@@ -9,14 +9,24 @@ public:
     Cycle();
     Cycle(Index index);
     Cycle(std::vector<Index> &a);
-    Cycle(const char *c);
-    
+    Cycle(const char *&c);
+    Cycle(const char *&&c);
+
     friend std::ostream &operator << (std::ostream &os, const Cycle &p);
     
-    const char *fromString(const char *s);
+    void fromString(const char *&s);
+
+    Index operator [] (Int i);
+    Index operator () (Int i);
 
     void push(Index value);
     Index pop();
+    Int size() const;
+
+    typedef std::vector<Index>::iterator iterator;
+    typedef std::vector<Index>::const_iterator const_iterator;
+    iterator begin();
+    iterator end();
 };
 
 class CycleForm : public Mapping {
@@ -24,23 +34,29 @@ private:
     std::vector<Cycle> cycles;
     Int _size;
 
-    void push(Cycle &c);
 public:
     CycleForm(Int N=MAX_PERMUTATION_SIZE);
     CycleForm(const std::vector< std::vector<Index> > &a);
-    CycleForm(const char *c);
+    CycleForm(const char *&c);
+    CycleForm(const char *&&c);
 
     friend std::ostream &operator << (std::ostream &os, const CycleForm &p);
-    Int size() const;
     
-    void fromVector(const std::vector<Index> &a);
-    const char *fromString(const char *s);
+    void fromVectorVector(const std::vector< std::vector<Index> > &vectorvector);
+    void fromString(const char *&s);
 
     Index operator [] (Int i) const;
     Index operator () (Int i) const;
     
     void swap(Int i, Int j);
 
-    CycleForm operator () (const CycleForm &other) const;
+    CycleForm operator () (const Mapping &other) const;
+
+    Int size() const;
+private:
+    void setSize(Int N);
+    void validate();
+    
+    Index get(Index i) const;
 };
 
