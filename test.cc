@@ -1,4 +1,5 @@
 #include "permutations.h"
+#include "cycleform.h"
 
 #define TEST(x) try { \
     test##x(); \
@@ -97,7 +98,7 @@ void testString() {
 }
 
 void testStringLeadingSpace() {
-    Permutation p(" \n \t Permutation({5, 3, 4, 2, 6, 1, 0})");
+    Permutation p(" \n \t Permutation(\n{5, 3, 4, 2, 6, 1, 0} )");
     std::cout << p << "\n";
     if (p.size() != 7)
         error("expected 7 elements in this permutation");
@@ -222,6 +223,28 @@ void testComposeFail() {
     Permutation r = p(q);
 }
 
+void testCycle() {
+    Cycle c;
+    c.push(0);
+    c.push(1);
+    c.push(2);
+    std::cout << "cycle = " << c << "\n";
+    if (c.pop() != 2)
+        error("didn't pop right");
+}
+
+void testCycleFromString() {
+    Cycle c("{0, 1, 5}");
+    std::cout << "cycle = " << c << "\n";
+    if (c.pop() != 5)
+        error("didn't pop right");
+}
+
+void testCycleFromStringFail() {
+    Cycle c("{0, 1, 5,");
+    std::cout << "cycle = " << c << "\n";
+}
+
 int main(int narg, char **args) {
     TEST(Copy);
     TEST(Next);
@@ -252,6 +275,10 @@ int main(int narg, char **args) {
 
     TEST(Compose);
     TESTSHOULDFAIL(ComposeFail);
+    
+    TEST(Cycle);
+    TEST(CycleFromString);
+    TESTSHOULDFAIL(CycleFromStringFail);
 
     std::cout << "All tests passed, good work.\n";
     return 0;

@@ -44,60 +44,15 @@ void Permutation::fromVector(const std::vector<Index> &a) {
 }
 
 const char *Permutation::fromString(const char *c) {
-    c = matchUpTo(c, "Permutation({");
-    if (!c)
+    if (!(c=matchUpTo(c, "Permutation(")))
         return nullptr;
-    Int value = 0;
-    bool seen_numbers = false;
-    bool seen_space = false;
     std::vector<Index> trial;
-    while (*c != '}') {
-        if (*c == 0)
-            return nullptr;
-        switch (*c) {
-            case '\t':
-            case '\n':
-            case ' ':
-                seen_space = true;
-                break; 
-            case ',':
-                if (!seen_numbers || value >= MAX_PERMUTATION_SIZE)
-                    return nullptr;
-                trial.push_back(value);
-                value = 0;
-                seen_numbers = false;
-                seen_space = false;
-                break; 
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                if (seen_space and seen_numbers)
-                    return nullptr;
-                seen_numbers = true;
-                seen_space = false;
-                value *= 10;
-                value += (*c)-'0';
-                break;
-            default:
-                return nullptr;
-        }
-        ++c;
-    }
-    if (*++c != ')')
+    if (!(c=getArrayFromString(trial, c)))
         return nullptr;
-    // expect one last number
-    if (!seen_numbers)
+    if (!(c=matchUpTo(c, ")")))
         return nullptr;
-    trial.push_back(value);
     fromVector(trial);
-    return ++c;
+    return c;
 }
 
 void Permutation::fromOrder(BigInt o) {
@@ -193,14 +148,6 @@ Permutation Permutation::operator () (const Permutation &other) const {
         p.array.push_back(array[other.array[i]]);
     return p;
 }
-
-bool Permutation::operator == (const Permutation &other) const {
-    return (array == other.array);
-}
-
-bool Permutation::operator != (const Permutation &other) const {
-    return (array != other.array);
-} 
 
 Permutation Permutation::next() const {
     Permutation theNext = *this;

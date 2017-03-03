@@ -1,7 +1,7 @@
 #pragma once
 #include "config.h"
 
-class Permutation {
+class Permutation : public Mapping {
 private:
     std::vector<Index> array;
 
@@ -29,9 +29,6 @@ public:
     void swap(Int i, Int j);
 
     Permutation operator () (const Permutation &other) const;
-
-    bool operator == (const Permutation &other) const;
-    bool operator != (const Permutation &other) const;
     
     Permutation next() const;
     MaybeDone makeNext();

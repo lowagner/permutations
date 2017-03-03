@@ -38,3 +38,14 @@ const char *firstNonSpace(const char *c);
 const char *matchUpTo(const char *c, const char *format);
    
 std::ostream &operator << (std::ostream &os, const std::vector<Index> &p);
+const char *getArrayFromString(std::vector<Index> &trial, const char *c);
+
+class Mapping {
+public:
+    virtual Int size() const;
+    virtual Index operator [] (Int i) const;
+    virtual Index operator () (Int i) const;
+    
+    bool operator == (const Mapping &other) const;
+    bool operator != (const Mapping &other) const;
+};
