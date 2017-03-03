@@ -1,4 +1,4 @@
-#include "permutations.h"
+#include "permutation.h"
 
 int main(int narg, char **args) {
     Permutation p;

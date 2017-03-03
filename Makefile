@@ -9,11 +9,11 @@ DEBUGLEVEL_G=9001
 CFLAGS_COMMON=-std=c++14 $(DEFINES:%=-D%)
 LDFLAGS=-lgmpxx -lgmp
 # source cc files with headers:
-HEADED=permutations.cc config.cc cycleform.cc
+HEADED=lowlevel.cc mapping.cc permutation.cc cycleform.cc
 # source cc files without headers:
 NON_HEADED=
 # also add any other remaining headers to this guy:
-REMAINING_HEADERS=
+REMAINING_HEADERS=config.h
 
 # hopefully no need to modify past this point
 CFLAGS=$(CFLAGS_COMMON) -DDEBUG=$(DEBUGLEVEL)

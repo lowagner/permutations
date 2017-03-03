@@ -1,4 +1,4 @@
-#include "permutations.h"
+#include "permutation.h"
 #include "cycleform.h"
 
 #define TEST(x) try { \

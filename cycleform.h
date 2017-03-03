@@ -1,5 +1,5 @@
 #pragma once
-#include "config.h"
+#include "mapping.h"
 
 class Cycle {
 private:
