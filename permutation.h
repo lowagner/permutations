@@ -7,6 +7,7 @@ private:
 
 public:
     Permutation(Int N=MAX_PERMUTATION_SIZE);
+    Permutation(const Mapping &c);
     Permutation(const std::vector<Index> &a);
     Permutation(const char *&c);
     Permutation(const char *&&c);

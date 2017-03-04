@@ -9,7 +9,7 @@ Cycle::Cycle(Index index) {
     array.push_back(index);
 }
 
-Cycle::Cycle(std::vector<Index> &a) {
+Cycle::Cycle(const std::vector<Index> &a) {
     array = a;
 }
     
@@ -77,6 +77,32 @@ CycleForm::CycleForm(Int N) {
     setSize(N);
 }
 
+CycleForm::CycleForm(const Mapping &m) {
+    const Int N = m.size();
+    setSize(N);
+    std::vector<Index> indexUnused;
+    indexUnused.reserve(N);
+    for (Int i=N-1; i>=0; --i)
+        indexUnused.push_back(1);
+    Int first = 0;
+    while (first < N) {
+        while (indexUnused[first] == 0) {
+            if (++first >= N)
+                return;
+        }
+        indexUnused[first] = 0;
+        Int next = m[first];
+        if (first == next)
+            continue;
+        Cycle newcycle(first);
+        do {
+            newcycle.push(next);
+            indexUnused[next] = 0;
+        } while ((next=m[next]) != first);
+        cycles.push_back(newcycle);
+    }
+}
+
 CycleForm::CycleForm(const Cycle &c) {
     std::vector< std::vector<Index> > a;
     a.push_back({});
@@ -100,7 +126,7 @@ CycleForm::CycleForm(const char *&&c) {
 std::ostream &operator << (std::ostream &os, const CycleForm &C) {
     os << "CycleForm({";
     if (C.cycles.size() == 0)
-        return os << "{" << C.size() << "}})";
+        return os << "{" << (C.size()-1) << "}})";
     os << C.cycles[0];
     for (Int i=1; i<C.cycles.size(); ++i)
         os << ", " << C.cycles[i];
@@ -142,13 +168,31 @@ Index CycleForm::get(Index i) const {
     // brute force it for now.  TODO sort cycles in some smart way.
     for (auto const cycle : cycles) {
         for (Int j=0; j<cycle.size(); ++j) {
-            if (cycle[j] == i) {
+            if (cycle[j] == i)
                 return cycle(j+1);  // () loops around.
-            }
         }
     }
     // if we couldn't find it in the cycles list, it is a fixed point.
     return i;
+}
+
+void CycleForm::swap(Int i, Int j) {
+    // {0 1 3} -> swap 0, 2 -> {0 1 3} {0 2} = {0 2 1 3}
+    // ((permutation form: [1, 3, 2, 0] -> [2, 3, 1, 0] = {0 2 1 3}))
+    // {0 1 2} -> swap 0, 2 -> {0 1 2} {0 2} = {0} {1 2}
+    // {0 1 2} -> swap 0, 1 -> {0 1 2} {0 1} = {0 2} {1}
+    // {0 1 3 4} -> swap 0, 2 -> {0 1 3 4} {0 2} = {0 2 1 3 4}
+    // {0 1 3 4} -> swap 1, 3 -> {0 1 3 4} {1 3} = {1 4 0} {3}
+    // {0 1 2 3 4} -> swap 1, 2 -> {0 1 2 3 4} {1 2} = {0 1 3 4} {2}
+    // {0 5 4 3 1} -> swap 4 5 -> {0 5 4 3 1} {4 5} = {0 5 3 1} {4}
+    // could be a bit lazy:  create a new cycleform, determine where everyone goes.
+    if (i < 0 || i >= _size || j < 0 || j >= _size)
+        throw std::out_of_range("indices out of bounds");
+    if (i == j)
+        return;
+    if (j > i)
+        std::swap(i, j);
+    throw std::logic_error("TODO.");
 }
 
 Int CycleForm::size() const {

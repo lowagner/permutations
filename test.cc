@@ -269,6 +269,17 @@ void testCycleFromStringFail() {
     std::cout << "cycle = " << c << "\n";
 }
 
+void testCycleFromPermutation() {
+    Permutation p({0, 1, 5, 4, 3, 2});
+    CycleForm c(p);
+    std::cout << " cycleform = " << c << "\n";
+    if (c != p)
+        error("should have been equal to original permutation");
+    Permutation P(c);
+    if (c != P)
+        error("should have been equal to original cycleform");
+}
+
 int main(int narg, char **args) {
     TEST(Copy);
     TEST(Next);
@@ -305,6 +316,8 @@ int main(int narg, char **args) {
     TEST(Cycle);
     TEST(CycleFromString);
     TESTSHOULDFAIL(CycleFromStringFail);
+
+    TEST(CycleFromPermutation);
 
     std::cout << "All tests passed, good work.\n";
     return 0;

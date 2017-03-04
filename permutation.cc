@@ -8,6 +8,13 @@ Permutation::Permutation(Int N) {
         array.push_back(i);
 }
 
+Permutation::Permutation(const Mapping &m) {
+    const Int N = m.size();
+    setSize(N);
+    for (Int i=0; i<N; ++i)
+        array.push_back(m[i]);
+}
+
 Permutation::Permutation(const std::vector<Index> &a) {
     fromVector(a);
 }
@@ -18,10 +25,6 @@ Permutation::Permutation(const char *&c) {
 
 Permutation::Permutation(const char *&&c) {
     fromString(c);
-}
-
-Int Permutation::size() const {
-    return array.size();
 }
 
 std::ostream &operator << (std::ostream &os, const Permutation &p) {
@@ -176,6 +179,10 @@ MaybeDone Permutation::makeNext() {
     Index j = findNextLargestValueFromIndexOn(array[i], i+1);
     std::swap(array[i], array[j]);
     return NotDone;
+}
+
+Int Permutation::size() const {
+    return array.size();
 }
 
 void Permutation::setSize(Int N) {

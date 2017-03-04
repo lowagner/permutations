@@ -1,5 +1,6 @@
 #pragma once
 #include "mapping.h"
+#include "permutation.h"
 
 class Cycle {
 private:
@@ -8,7 +9,7 @@ private:
 public:
     Cycle();
     Cycle(Index index);
-    Cycle(std::vector<Index> &a);
+    Cycle(const std::vector<Index> &a);
     Cycle(const char *&c);
     Cycle(const char *&&c);
 
@@ -38,6 +39,7 @@ private:
 
 public:
     CycleForm(Int N=MAX_PERMUTATION_SIZE);
+    CycleForm(const Mapping &p);
     CycleForm(const Cycle &c);
     CycleForm(const std::vector< std::vector<Index> > &a);
     CycleForm(const char *&c);
