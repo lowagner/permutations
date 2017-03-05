@@ -17,9 +17,10 @@ void warn(const char *c) {
 }
 #endif
 
-void firstNonSpace(const char *&c) {
+char firstNonSpace(const char *&c) {
     while (*c == ' ' or *c == '\t' or *c == '\n')
         ++c;
+    return *c;
 }
 
 void matchUpTo(const char *&c, const char *format) {
@@ -34,33 +35,13 @@ void matchUpTo(const char *&c, const char *format) {
     }
 }
 
-void getArrayFromString(std::vector<Index> &trial, const char *&c) {
+Int getIntegerFromString(const char *&c) {
+    firstNonSpace(c);
     const char *original_c = c;
-    matchUpTo(c, "{");
     Int value = 0;
     bool seen_numbers = false;
-    bool seen_space = false;
-    while (*c != '}') {
-        if (*c == 0) {
-            c = original_c;
-            throw std::invalid_argument("not an array, no closing bracket");
-        }
+    while (true) {
         switch (*c) {
-            case '\t':
-            case '\n':
-            case ' ':
-                seen_space = true;
-                break; 
-            case ',':
-                if (!seen_numbers || value >= MAX_PERMUTATION_SIZE) {
-                    c = original_c;
-                    throw std::invalid_argument("no number between two commas");
-                }
-                trial.push_back(value);
-                value = 0;
-                seen_numbers = false;
-                seen_space = false;
-                break; 
             case '0':
             case '1':
             case '2':
@@ -71,35 +52,51 @@ void getArrayFromString(std::vector<Index> &trial, const char *&c) {
             case '7':
             case '8':
             case '9':
-                if (seen_space and seen_numbers) {
-                    c = original_c;
-                    throw std::invalid_argument("two numbers separated by space, no comma");
-                }
                 seen_numbers = true;
-                seen_space = false;
                 value *= 10;
                 value += (*c)-'0';
                 break;
             default:
+                if (seen_numbers)
+                    return value;
                 c = original_c;
-                throw std::invalid_argument("unrecognized character; not a number, space, brace, or comma");
+                throw std::invalid_argument("expected a number");
         }
         ++c;
     }
-    // expect one last number
-    if (!seen_numbers) {
-        c = original_c;
-        throw std::invalid_argument("needed one last number after last comma, before brace");
+}
+
+void getArrayFromString(std::vector<Index> &trial, const char *&c) {
+    const char *original_c = c;
+    matchUpTo(c, "{");
+    if (firstNonSpace(c) == '}')
+        return;
+    while (true) {
+        try {
+            Int value = getIntegerFromString(c);
+            trial.push_back(value);
+        } catch (std::exception &e) {
+            c = original_c;
+            throw std::invalid_argument("no next integer");
+        }
+        switch (firstNonSpace(c)) {
+            case 0:
+                c = original_c;
+                throw std::invalid_argument("not an array, no closing bracket");
+            case '}':
+                ++c;
+                return;
+            case ',':
+                ++c;
+        }
     }
-    trial.push_back(value);
-    c++;
 }
 
 std::ostream &operator << (std::ostream &os, const std::vector<Index> &p) {
     if (!p.size())
         return os << "{}";
-    os << "{" << (int)p[0];
+    os << "{" << (Int)p[0];
     for (int i=1; i<p.size(); ++i)
-        os << ", " << (int)p[i];
+        os << ", " << (Int)p[i];
     return os << "}";
 }
