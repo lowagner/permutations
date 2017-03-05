@@ -92,8 +92,10 @@ CycleForm::CycleForm(const Mapping &m) {
         }
         indexUnused[first] = 0;
         Int next = m[first];
-        if (first == next)
+        if (first == next) {
+            ++first;
             continue;
+        }
         Cycle newcycle(first);
         do {
             newcycle.push(next);
@@ -193,6 +195,37 @@ void CycleForm::swap(Int i, Int j) {
     if (j > i)
         std::swap(i, j);
     throw std::logic_error("TODO.");
+}
+
+CycleForm CycleForm::operator () (const Mapping &other) const {
+    if (_size != other.size())
+        throw std::out_of_range("unmatched Permutation sizes, cannot compose");
+    CycleForm C(_size);
+    
+    std::vector<Index> indexUnused;
+    indexUnused.reserve(_size);
+    for (Int i=_size-1; i>=0; --i)
+        indexUnused.push_back(1);
+    Int first = 0;
+    while (first < _size) {
+        while (indexUnused[first] == 0) {
+            if (++first >= _size)
+                return C;
+        }
+        indexUnused[first] = 0;
+        Int next = get(other[first]);
+        if (first == next) {
+            ++first;
+            continue;
+        }
+        Cycle newcycle(first);
+        do {
+            newcycle.push(next);
+            indexUnused[next] = 0;
+        } while ((next=get(other[next])) != first);
+        C.cycles.push_back(newcycle);
+    }
+    return C;
 }
 
 Int CycleForm::size() const {

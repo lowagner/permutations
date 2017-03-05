@@ -141,7 +141,7 @@ void Permutation::swap(Int i, Int j) {
 }
 
 Permutation Permutation::operator () (const Mapping &other) const {
-    Int N = size();
+    const Int N = size();
     if (N != other.size())
         throw std::out_of_range("unmatched Permutation sizes, cannot compose");
     Permutation p(2);

@@ -280,6 +280,24 @@ void testCycleFromPermutation() {
         error("should have been equal to original cycleform");
 }
 
+void testComposeCycle() {
+    CycleForm a({{1, 2, 0}, {4, 3}});
+    Permutation B({0, 1, 3, 4, 2});
+    Permutation Ba = B(a);
+    std::cout << B << "(" << a << ") = " << Ba << "\n";
+    Permutation A(a);
+    Permutation BA = B(A);
+    if (Ba != BA)
+        error("Ba != BA; those should have been equal");
+    CycleForm b(B);
+    CycleForm ba = b(a);
+    CycleForm bA = b(A);
+    if (ba != bA)
+        error("ba != bA; those should have been equal");
+    if (ba != BA)
+        error("ba != BA; those should have been equal");
+}
+
 int main(int narg, char **args) {
     TEST(Copy);
     TEST(Next);
@@ -318,6 +336,8 @@ int main(int narg, char **args) {
     TESTSHOULDFAIL(CycleFromStringFail);
 
     TEST(CycleFromPermutation);
+
+    TEST(ComposeCycle);
 
     std::cout << "All tests passed, good work.\n";
     return 0;
