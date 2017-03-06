@@ -151,9 +151,35 @@ void CycleForm::fromVectorVector(const std::vector< std::vector<Index> > &vector
 
 void CycleForm::fromString(const char *&c) {
     std::vector< std::vector<Index> > a;
-    // TODO
-    throw std::logic_error("not implemented yet");
-    fromVectorVector(a);
+    const char *original_c = c;
+    matchUpTo(c, "CycleForm(");
+    matchUpTo(c, "{");
+    if (firstNonSpace(c) == '}') {
+        c = original_c;
+        throw std::invalid_argument("need at least a cycle to detemine size");
+    }
+    while (true) {
+        std::vector<Index> trial;
+        try {
+            getArrayFromString(trial, c);
+        } catch (std::exception &e) {
+            c = original_c;
+            throw std::invalid_argument("no next integer");
+        }
+        a.push_back(trial);
+        switch (firstNonSpace(c)) {
+            case ',':
+                ++c;
+                break;
+            case '}':
+                ++c;
+                matchUpTo(c, ")");
+                return fromVectorVector(a);
+            default:
+                c = original_c;
+                throw std::invalid_argument("not an array, no closing bracket");
+        }
+    }
 }
  
 Index CycleForm::operator [] (Int i) const {

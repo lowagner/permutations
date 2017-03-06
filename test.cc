@@ -298,6 +298,31 @@ void testComposeCycle() {
         error("ba != BA; those should have been equal");
 }
 
+void testCycleFormFromString() {
+    CycleForm C("CycleForm({{0, 1, 2}, {5}})");
+    std::cout << " C = " << C << "\n";
+    if (C != Permutation({1, 2, 0, 3, 4, 5}))
+        error("did not get cycleform from string correctly");
+}
+
+void testCycleFormFromStringBraceFail() {
+    CycleForm C("CycleForm({{0, 1, 2}, {5})");
+    std::cout << " C = " << C << "\n";
+}
+
+void testCycleFormFromStringParenthesisFail() {
+    CycleForm C("CycleForm({{0, 1, 2, 3, 4}, {5}}");
+    std::cout << " C = " << C << "\n";
+}
+
+void testCycleFormAndPermutationFromString() {
+    const char *s = "CycleForm({{0, 1, 3}, {10, 11}})Permutation({1, 2, 3, 0, 4, 5, 10, 6, 8, 7, 9, 11})";
+    CycleForm C(s);
+    Permutation P(s);
+    std::cout << " C = " << C << "\n";
+    std::cout << " P = " << P << "\n";
+}
+
 int main(int narg, char **args) {
     TEST(Copy);
     TEST(Next);
@@ -338,6 +363,11 @@ int main(int narg, char **args) {
     TEST(CycleFromPermutation);
 
     TEST(ComposeCycle);
+    
+    TEST(CycleFormFromString);
+    TESTSHOULDFAIL(CycleFormFromStringBraceFail);
+    TESTSHOULDFAIL(CycleFormFromStringParenthesisFail);
+    TEST(CycleFormAndPermutationFromString);
 
     std::cout << "All tests passed, good work.\n";
     return 0;

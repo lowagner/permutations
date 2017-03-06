@@ -72,22 +72,24 @@ void getArrayFromString(std::vector<Index> &trial, const char *&c) {
     if (firstNonSpace(c) == '}')
         return;
     while (true) {
+        Int value;
         try {
-            Int value = getIntegerFromString(c);
-            trial.push_back(value);
+            value = getIntegerFromString(c);
         } catch (std::exception &e) {
             c = original_c;
             throw std::invalid_argument("no next integer");
         }
+        trial.push_back(value);
         switch (firstNonSpace(c)) {
-            case 0:
-                c = original_c;
-                throw std::invalid_argument("not an array, no closing bracket");
             case '}':
                 ++c;
                 return;
             case ',':
                 ++c;
+                break;
+            default:
+                c = original_c;
+                throw std::invalid_argument("not an array, no closing bracket");
         }
     }
 }
