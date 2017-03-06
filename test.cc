@@ -323,6 +323,14 @@ void testCycleFormAndPermutationFromString() {
     std::cout << " P = " << P << "\n";
 }
 
+void testCycleFormIteration() {
+    CycleForm C("CycleForm({{0, 5, 4}, {6}})");
+    std::cout << " C = " << C << "\n";
+    for (const auto &cycle : C) {
+        std::cout << " cycle " << cycle << "\n";
+    }
+}
+
 int main(int narg, char **args) {
     TEST(Copy);
     TEST(Next);
@@ -368,6 +376,7 @@ int main(int narg, char **args) {
     TESTSHOULDFAIL(CycleFormFromStringBraceFail);
     TESTSHOULDFAIL(CycleFormFromStringParenthesisFail);
     TEST(CycleFormAndPermutationFromString);
+    TEST(CycleFormIteration);
 
     std::cout << "All tests passed, good work.\n";
     return 0;

@@ -15,6 +15,7 @@ public:
 
     friend std::ostream &operator << (std::ostream &os, const Cycle &p);
     
+    void fromVector(const std::vector<Index> &a);
     void fromString(const char *&s);
 
     Index operator [] (Int i) const;
@@ -56,6 +57,10 @@ public:
     void swap(Int i, Int j);
 
     CycleForm operator () (const Mapping &other) const;
+    
+    typedef std::vector<Cycle>::const_iterator const_iterator;
+    const_iterator begin() const;
+    const_iterator end() const;
 
     Int size() const;
 private:

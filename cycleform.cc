@@ -25,10 +25,14 @@ std::ostream &operator << (std::ostream &os, const Cycle &c) {
     return os << c.array;
 }
 
+void Cycle::fromVector(const std::vector<Index> &a) {
+    array = a;
+}
+
 void Cycle::fromString(const char *&s) {
     std::vector<Index> trial;
     getArrayFromString(trial, s);
-    array = trial;
+    fromVector(trial);
 }
     
 Index Cycle::operator [] (Int i) const {
@@ -136,6 +140,7 @@ std::ostream &operator << (std::ostream &os, const CycleForm &C) {
 }
 
 void CycleForm::fromVectorVector(const std::vector< std::vector<Index> > &vectorvector) {
+    cycles.clear();
     Int N = 0;
     for (auto cycle : vectorvector)
         for (auto index : cycle) {
@@ -252,6 +257,14 @@ CycleForm CycleForm::operator () (const Mapping &other) const {
         C.cycles.push_back(newcycle);
     }
     return C;
+}
+
+CycleForm::const_iterator CycleForm::begin() const {
+    return cycles.begin();
+}
+
+CycleForm::const_iterator CycleForm::end() const {
+    return cycles.end();
 }
 
 Int CycleForm::size() const {
