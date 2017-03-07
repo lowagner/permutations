@@ -331,6 +331,26 @@ void testCycleFormIteration() {
     }
 }
 
+void testCycleFormSwap() {
+    // {0 1 3 4} -> swap 0, 2 -> {0 1 3 4} {0 2} = {0 2 1 3 4}
+    CycleForm C(Cycle({0, 1, 3, 4}));
+    Permutation P(C);
+    std::cout << "before, C = " << C << "\n";
+    C.swap(0, 2);
+    std::cout << " after, C = " << C << "\n";
+    P.swap(0, 2);
+    if (P != C or C != CycleForm(Cycle({0, 2, 1, 3, 4})))
+        error("bad swap");
+}
+
+void testCycleFormSwapFail() {
+    // {0 1 3 4} -> swap 0, 2 -> {0 1 3 4} {0 2} = {0 2 1 3 4}
+    CycleForm C(Cycle({0, 9, 1, 3, 4}));
+    std::cout << "C = " << C << "\n";
+    C.swap(3, 100);
+    std::cout << "after, C = " << C << "\n";
+}
+
 int main(int narg, char **args) {
     TEST(Copy);
     TEST(Next);
@@ -377,6 +397,9 @@ int main(int narg, char **args) {
     TESTSHOULDFAIL(CycleFormFromStringParenthesisFail);
     TEST(CycleFormAndPermutationFromString);
     TEST(CycleFormIteration);
+
+    TEST(CycleFormSwap);
+    TESTSHOULDFAIL(CycleFormSwapFail);
 
     std::cout << "All tests passed, good work.\n";
     return 0;

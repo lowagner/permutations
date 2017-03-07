@@ -210,22 +210,18 @@ Index CycleForm::get(Index i) const {
 }
 
 void CycleForm::swap(Int i, Int j) {
-    // {0 1 3} -> swap 0, 2 -> {0 1 3} {0 2} = {0 2 1 3}
-    // ((permutation form: [1, 3, 2, 0] -> [2, 3, 1, 0] = {0 2 1 3}))
-    // {0 1 2} -> swap 0, 2 -> {0 1 2} {0 2} = {0} {1 2}
-    // {0 1 2} -> swap 0, 1 -> {0 1 2} {0 1} = {0 2} {1}
-    // {0 1 3 4} -> swap 0, 2 -> {0 1 3 4} {0 2} = {0 2 1 3 4}
-    // {0 1 3 4} -> swap 1, 3 -> {0 1 3 4} {1 3} = {1 4 0} {3}
-    // {0 1 2 3 4} -> swap 1, 2 -> {0 1 2 3 4} {1 2} = {0 1 3 4} {2}
-    // {0 5 4 3 1} -> swap 4 5 -> {0 5 4 3 1} {4 5} = {0 5 3 1} {4}
-    // could be a bit lazy:  create a new cycleform, determine where everyone goes.
+    // be a bit lazy:  create a new cycleform, determine where everyone goes.
     if (i < 0 || i >= _size || j < 0 || j >= _size)
         throw std::out_of_range("indices out of bounds");
     if (i == j)
         return;
-    if (j > i)
-        std::swap(i, j);
-    throw std::logic_error("TODO.");
+    CycleForm swapper;
+    if (_size-1 == i || _size-1 == j)
+        swapper.fromVectorVector({{(Index)i, (Index)j}});
+    else
+        swapper.fromVectorVector({{(Index)i, (Index)j}, {(Index)(_size-1)}});
+    CycleForm result = operator() (swapper);
+    cycles = result.cycles;
 }
 
 CycleForm CycleForm::operator () (const Mapping &other) const {
