@@ -29,6 +29,8 @@ public:
     Permutation next() const;
     MaybeDone makeNext();
 
+    std::vector<Index> getDeltaVector() const;
+
     Int size() const;
 private:
     void setSize(Int N);

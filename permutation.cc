@@ -181,6 +181,16 @@ MaybeDone Permutation::makeNext() {
     return NotDone;
 }
 
+std::vector<Index> Permutation::getDeltaVector() const {
+    std::vector<Index> output;
+    output.reserve(array.size()-1);
+    for (int i=1; i<array.size(); ++i) {
+        int result = std::abs(array[i]-array[i-1]);
+        output.push_back((Index)result);
+    }
+    return output;
+}
+
 Int Permutation::size() const {
     return array.size();
 }

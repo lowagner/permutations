@@ -3,6 +3,8 @@
 
 class Mapping {
 public:
+    virtual ~Mapping();
+
     virtual Int size() const;
     virtual Index operator [] (Int i) const;
     virtual Index operator () (Int i) const;

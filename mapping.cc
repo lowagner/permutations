@@ -1,5 +1,7 @@
 #include "mapping.h"
 
+Mapping::~Mapping() {}
+
 Int Mapping::size() const {
     throw std::logic_error("shouldn't call base class Mapping size()");
 }

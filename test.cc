@@ -351,6 +351,14 @@ void testCycleFormSwapFail() {
     std::cout << "after, C = " << C << "\n";
 }
 
+void testDeltaVector() {
+    Permutation P({1, 0, 2, 5, 4, 3});
+    std::vector<Index> delta = P.getDeltaVector();
+    std::vector<Index> expected = {1, 2, 3, 1, 1};
+    if (expected != delta)
+        error("invalid Delta vector");
+}
+
 int main(int narg, char **args) {
     TEST(Copy);
     TEST(Next);
@@ -400,6 +408,8 @@ int main(int narg, char **args) {
 
     TEST(CycleFormSwap);
     TESTSHOULDFAIL(CycleFormSwapFail);
+    
+    TEST(DeltaVector);
 
     std::cout << "All tests passed, good work.\n";
     return 0;
